@@ -26,8 +26,27 @@ def step_gradient(b, w, data, alpha):
     :param alpha: float - taxa de aprendizado (a.k.a. tamanho do passo)
     :return: float,float - os novos valores de b e w, respectivamente
     """
-    raise NotImplementedError  # substituir pelo seu codigo
+    m = len(data)
 
+    # Inicialização dos gradientes
+    grad_b = 0
+    grad_w = 0
+    # Loop através dos exemplos no conjunto de dados
+    for i in range(m):
+        x = data[i, 0]
+        y = data[i, 1]
+        
+        grad_b +=  2 * ((w * x + b) - y)
+        grad_w +=  (2 * x) * ((w * x + b) - y)
+    
+    grad_b = (1 / m) * grad_b
+    grad_w = (1 / m) * grad_w
+    
+    # Atualização dos parâmetros usando a taxa de aprendizado
+    b -= alpha * grad_b
+    w -= alpha * grad_w
+
+    return b, w
 
 def fit(data, b, w, alpha, num_iterations):
     """
@@ -44,4 +63,12 @@ def fit(data, b, w, alpha, num_iterations):
     :param num_iterations: int - numero de épocas/iterações para executar a descida de gradiente
     :return: list,list - uma lista com os b e outra com os w obtidos ao longo da execução
     """
-    raise NotImplementedError  # substituir pelo seu codigo
+    b_history = []
+    w_history = []
+    for i in range(num_iterations):
+        b, w = step_gradient(b, w, data, alpha)
+        print(compute_mse(b,w,data))
+        b_history.append(b)
+        w_history.append(w)
+        
+    return b_history,w_history
