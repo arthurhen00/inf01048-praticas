@@ -3,7 +3,7 @@ Atividade 1
 
 Atividade 2
     CIFAR-10
-        60000 imagens coloridas (3 canais de cor) 32x32 separadas em 10 classes, cada uma com 6000 imagens. 5000 imagens de treinamento e 10000 de teste.
+        60000 imagens coloridas (3 canais de cor) 32x32 separadas em 10 classes, cada uma com 6000 imagens. 5000 imagens de treinamento e 1000 de teste.
 
         A complexidade da análise desse conjunto de dados reside na dificuldade de distinguir algumas classes. Por exemplo, gatos e cachorros são animais muito semelhantes, sendo necessário diferenciar detalhes sutis para classificá-los corretamente. Além disso, as imagens podem conter informações adicionais além das classes desejadas, as quais precisam ser ignoradas.
 

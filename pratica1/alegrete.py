@@ -67,7 +67,6 @@ def fit(data, b, w, alpha, num_iterations):
     w_history = []
     for i in range(num_iterations):
         b, w = step_gradient(b, w, data, alpha)
-        print(compute_mse(b,w,data))
         b_history.append(b)
         w_history.append(w)
         
