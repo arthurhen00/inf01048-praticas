@@ -13,7 +13,10 @@ class Nodo:
         :param custo:int, custo do caminho da raiz até este nó
         """
         # substitua a linha abaixo pelo seu codigo
-        raise NotImplementedError
+        self.estado = estado
+        self.pai = pai
+        self.acao = acao
+        self.custo = custo
 
 
 def sucessor(estado:str)->Set[Tuple[str,str]]:
@@ -25,7 +28,28 @@ def sucessor(estado:str)->Set[Tuple[str,str]]:
     :return:
     """
     # substituir a linha abaixo pelo seu codigo
-    raise NotImplementedError
+    emptyPosition = estado.index('_')
+    
+    # 3x3, MxM -> M = sqrt(str.len()) algo assim
+    moves = {
+        ('esquerda', -1),
+        ('direita' ,  1),
+        ('acima'   , int(-len(estado) ** 0.5)),
+        ('abaixo'  , int(len(estado) ** 0.5))
+    }
+
+    legalMoves = set()
+    for direction, value in moves:
+        # movimento valido?
+        if 0 <= (emptyPosition + value) < len(estado):
+            # adicionar movimento no conjunto de tuplas
+            newState = list(estado)
+            newState[emptyPosition] = newState[emptyPosition + value]
+            newState[emptyPosition + value] = '_'
+            newState = ''.join(newState)
+            legalMoves.add((direction, newState))
+
+    return legalMoves
 
 
 def expande(nodo:Nodo)->Set[Nodo]:
