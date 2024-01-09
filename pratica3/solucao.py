@@ -1,10 +1,11 @@
 from typing import Iterable, Set, Tuple
+import heapq
 
 class Nodo:
     """
     Implemente a classe Nodo com os atributos descritos na funcao init
     """
-    def __init__(self, estado:str, pai:Nodo, acao:str, custo:int):
+    def __init__(self, estado:str, pai: 'Nodo', acao:str, custo:int):
         """
         Inicializa o nodo com os atributos recebidos
         :param estado:str, representacao do estado do 8-puzzle
@@ -17,7 +18,23 @@ class Nodo:
         self.pai = pai
         self.acao = acao
         self.custo = custo
+        
+    def hamming_distance_to_objective(self, objective : str):
+        return hamming_distance(self.estado, objective)
 
+
+def hamming_distance(string: str, objective):
+    if len(string) != len(objective):
+        raise ValueError("Input strings must have the same length")
+    return sum(c1 != c2 for c1, c2 in zip(string, objective))
+
+
+def get_path(nodo: Nodo):
+    actions = []
+    while (nodo.pai != None):
+        actions.insert(0,nodo.acao)
+        nodo = nodo.pai
+    return actions
 
 def sucessor(estado:str)->Set[Tuple[str,str]]:
     """
@@ -28,29 +45,27 @@ def sucessor(estado:str)->Set[Tuple[str,str]]:
     :return:
     """
     # substituir a linha abaixo pelo seu codigo
-    emptyPosition = estado.index('_')
+    empty_position = estado.index('_')
     
-    # 3x3, MxM -> M = sqrt(str.len()) algo assim
     moves = {
-        ('esquerda', -1),
-        ('direita' ,  1),
-        ('acima'   , int(-len(estado) ** 0.5)),
-        ('abaixo'  , int(len(estado) ** 0.5))
+        ('esquerda', empty_position - 1),
+        ('direita' , empty_position + 1),
+        ('acima'   , empty_position - 3),
+        ('abaixo'  , empty_position + 3)
     }
+    
 
-    legalMoves = set()
-    for direction, value in moves:
+    legal_moves = set()
+    for direction, swap_index in moves:
         # movimento valido?
-        if 0 <= (emptyPosition + value) < len(estado):
+        if swap_index < len(estado) and swap_index >= 0:
             # adicionar movimento no conjunto de tuplas
-            newState = list(estado)
-            newState[emptyPosition] = newState[emptyPosition + value]
-            newState[emptyPosition + value] = '_'
-            newState = ''.join(newState)
-            legalMoves.add((direction, newState))
+            new_state = list(estado)
+            new_state[empty_position], new_state[swap_index] = new_state[swap_index], new_state[empty_position]
+            new_state = ''.join(new_state)
+            legal_moves.add((direction, new_state))
 
-    return legalMoves
-
+    return legal_moves
 
 def expande(nodo:Nodo)->Set[Nodo]:
     """
@@ -59,10 +74,16 @@ def expande(nodo:Nodo)->Set[Nodo]:
     :param nodo: objeto da classe Nodo
     :return:
     """
-    # substituir a linha abaixo pelo seu codigo
-    raise NotImplementedError
-
-
+    legal_moves = sucessor(nodo.estado)
+    new_nodes = set()
+   
+    for action, new_state in legal_moves:
+        new_nodes.add(Nodo(estado= new_state,
+                           pai= nodo,
+                           acao= action,
+                           custo= nodo.custo + 1))
+    return new_nodes
+ 
 def astar_hamming(estado:str)->list[str]:
     """
     Recebe um estado (string), executa a busca A* com h(n) = soma das distâncias de Hamming e
@@ -72,9 +93,39 @@ def astar_hamming(estado:str)->list[str]:
     :param estado: str
     :return:
     """
-    # substituir a linha abaixo pelo seu codigo
-    raise NotImplementedError
-
+    objective = '12345678_'
+    x = set()
+    f = []
+    
+    current_node = Nodo(estado= estado,
+                        pai= None,
+                        acao= None,
+                        custo= 0)
+    heapq.heapify(f)
+    heapq.heappush(f, ((current_node.hamming_distance_to_objective(objective) + current_node.custo, id(current_node)), current_node))
+    
+    while(f):
+        _, current_node = heapq.heappop(f)
+        
+        if current_node in x:
+            continue
+        print(len(f), '  -  ', len(x))
+        x.add(current_node)
+        
+        if current_node.estado == objective:
+            return get_path(nodo = current_node)
+        
+        discovered_nodes = expande(current_node)
+        for node in discovered_nodes:
+            if node not in x:
+                heapq.heappush(f, ((node.hamming_distance_to_objective(objective) + node.custo, id(node)), node))
+    
+    return None
+    
+    
+    
+print(astar_hamming('185423_67'))
+#print(astar_hamming('123456_78'))
 
 def astar_manhattan(estado:str)->list[str]:
     """
