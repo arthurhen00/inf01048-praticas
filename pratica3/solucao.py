@@ -181,39 +181,64 @@ def exec_astar(start_node):
 
 #opcional,extra
 def bfs(estado:str)->list[str]:
-    """
-    Recebe um estado (string), executa a busca em LARGURA e
-    retorna uma lista de ações que leva do
-    estado recebido até o objetivo ("12345678_").
-    Caso não haja solução a partir do estado recebido, retorna None
-    :param estado: str
-    :return:
-    """
-    # substituir a linha abaixo pelo seu codigo
-    raise NotImplementedError
+    fila = deque([(estado, [])])  # Inicializa a fila com o estado inicial e uma lista vazia de ações
+
+    while fila:
+        estado_atual, acoes_realizadas = fila.popleft()
+
+        if is_objetivo(estado_atual):
+            return acoes_realizadas  # Retorna a lista de ações quando o objetivo é atingido
+
+        for acao in gerar_acoes(estado_atual):
+            novo_estado = realizar_acao(estado_atual, acao)  # Implemente a função realizar_acao conforme as regras do seu problema
+            if novo_estado is not None:  # Verifica se a ação é válida
+                nova_acao = acoes_realizadas + [acao]
+                fila.append((novo_estado, nova_acao))
+
+    return None  # Retorna None se não encontrar solução
 
 #opcional,extra
 def dfs(estado:str)->list[str]:
-    """
-    Recebe um estado (string), executa a busca em PROFUNDIDADE e
-    retorna uma lista de ações que leva do
-    estado recebido até o objetivo ("12345678_").
-    Caso não haja solução a partir do estado recebido, retorna None
-    :param estado: str
-    :return:
-    """
-    # substituir a linha abaixo pelo seu codigo
-    raise NotImplementedError
+    def dfs_recursivo(estado_atual, acoes_realizadas):
+        if is_objetivo(estado_atual):
+            return acoes_realizadas  # Retorna a lista de ações quando o objetivo é atingido
+
+        for acao in gerar_acoes(estado_atual):
+            novo_estado = realizar_acao(estado_atual, acao)  # Implemente a função realizar_acao conforme as regras do seu problema
+            if novo_estado is not None:  # Verifica se a ação é válida
+                nova_acao = acoes_realizadas + [acao]
+                resultado = dfs_recursivo(novo_estado, nova_acao)
+                if resultado is not None:
+                    return resultado
+
+        return None  # Retorna None se não encontrar solução a partir do estado atual
+
+    # Exemplo de uso:
+    resultado = dfs_recursivo(estado, [])
+    
+    return resultado
 
 #opcional,extra
-def astar_new_heuristic(estado:str)->list[str]:
-    """
-    Recebe um estado (string), executa a busca A* com h(n) = sua nova heurística e
-    retorna uma lista de ações que leva do
-    estado recebido até o objetivo ("12345678_").
-    Caso não haja solução a partir do estado recebido, retorna None
-    :param estado: str
-    :return:
-    """
-    # substituir a linha abaixo pelo seu codigo
-    raise NotImplementedError
+def calcular_nova_heuristica(estado):
+    # Implemente sua heurística aqui
+    # Este é um exemplo de uma heurística simples que conta peças fora do lugar
+    objetivo = "12345678_"
+    return sum(1 for a, b in zip(estado, objetivo) if a != b)
+
+def astar_new_heuristic(estado):
+    fila_prioridade = [(calcular_nova_heuristica(estado), estado, [])]
+
+    while fila_prioridade:
+        _, estado_atual, acoes_realizadas = heapq.heappop(fila_prioridade)
+
+        if is_objetivo(estado_atual):
+            return acoes_realizadas  # Retorna a lista de ações quando o objetivo é atingido
+
+        for acao in gerar_acoes(estado_atual):
+            novo_estado = realizar_acao(estado_atual, acao)
+            if novo_estado is not None:
+                nova_acao = acoes_realizadas + [acao]
+                custo_total = len(nova_acao) + calcular_nova_heuristica(novo_estado)
+                heapq.heappush(fila_prioridade, (custo_total, novo_estado, nova_acao))
+
+    return None  # Retorna None se não encontrar solução
