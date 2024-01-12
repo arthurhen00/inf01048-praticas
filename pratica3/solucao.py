@@ -1,4 +1,5 @@
 from typing import Iterable, Set, Tuple
+from collections import deque
 import heapq
 
 from scipy.spatial.distance import hamming, cityblock
@@ -107,15 +108,15 @@ def expande(nodo:Nodo,)->Set[Nodo]:
     """
     legal_moves = sucessor(nodo.estado)
     new_nodes = set()
-   
+
     for action, new_state in legal_moves:
         new_nodes.add(Nodo(estado= new_state,
-                           pai= nodo,
-                           acao= action,
-                           custo= nodo.custo + 1,
-                           heuristica= nodo.heuristic))
+                        pai= nodo,
+                        acao= action,
+                        custo= nodo.custo + 1,
+                        heuristica= nodo.heuristic))
     return new_nodes
- 
+
 def astar_hamming(estado:str)->list[str]:
     """
     Recebe um estado (string), executa a busca A* com h(n) = soma das distâncias de Hamming e
@@ -125,7 +126,7 @@ def astar_hamming(estado:str)->list[str]:
     :param estado: str
     :return:
     """
-   
+
     current_node = Nodo(estado= estado,
                         pai= None,
                         acao= None,
@@ -181,42 +182,63 @@ def exec_astar(start_node):
 
 #opcional,extra
 def bfs(estado:str)->list[str]:
-    fila = deque([(estado, [])])  # Inicializa a fila com o estado inicial e uma lista vazia de ações
+    """
+    Recebe um estado (string), executa a busca em LARGURA e
+    retorna uma lista de ações que leva do
+    estado recebido até o objetivo ("12345678_").
+    Caso não haja solução a partir do estado recebido, retorna None
+    :param estado: str
+    :return:
+    """
+    queue = deque([(estado, [])])  # Inicializa a fila com o estado inicial e uma lista vazia de ações
 
-    while fila:
-        estado_atual, acoes_realizadas = fila.popleft()
+    while queue:
+        estado_atual, acoes_realizadas = queue.popleft()
 
-        if is_objetivo(estado_atual):
-            return acoes_realizadas  # Retorna a lista de ações quando o objetivo é atingido
+        if(objective == estado_atual):
+            return acoes_realizadas
 
-        for acao in gerar_acoes(estado_atual):
-            novo_estado = realizar_acao(estado_atual, acao)  # Implemente a função realizar_acao conforme as regras do seu problema
+        for acao in expande(estado_atual):
+            novo_estado = exec_astar(estado_atual, acao)
             if novo_estado is not None:  # Verifica se a ação é válida
                 nova_acao = acoes_realizadas + [acao]
-                fila.append((novo_estado, nova_acao))
+                queue.append((novo_estado, nova_acao))
 
     return None  # Retorna None se não encontrar solução
 
+#print(bfs('185423_67'))
+#print(bfs('123456_78'))
+#print(bfs('2_3541687'))
+#print(bfs('2_3541687'))
+
 #opcional,extra
 def dfs(estado:str)->list[str]:
-    def dfs_recursivo(estado_atual, acoes_realizadas):
-        if is_objetivo(estado_atual):
+    """
+    Recebe um estado (string), executa a busca em PROFUNDIDADE e
+    retorna uma lista de ações que leva do
+    estado recebido até o objetivo ("12345678_").
+    Caso não haja solução a partir do estado recebido, retorna None
+    :param estado: str
+    :return:
+    """
+    def dfs_rec(current_node, acoes_realizadas):
+        if current_node.estado == objective:
             return acoes_realizadas  # Retorna a lista de ações quando o objetivo é atingido
 
-        for acao in gerar_acoes(estado_atual):
-            novo_estado = realizar_acao(estado_atual, acao)  # Implemente a função realizar_acao conforme as regras do seu problema
+        for acao in expande(current_node):
+            novo_estado = exec_astar(current_node, acao)  # Implemente a função realizar_acao conforme as regras do seu problema
             if novo_estado is not None:  # Verifica se a ação é válida
                 nova_acao = acoes_realizadas + [acao]
-                resultado = dfs_recursivo(novo_estado, nova_acao)
+                resultado = dfs_rec(novo_estado, nova_acao)
                 if resultado is not None:
                     return resultado
 
         return None  # Retorna None se não encontrar solução a partir do estado atual
 
-    # Exemplo de uso:
-    resultado = dfs_recursivo(estado, [])
-    
-    return resultado
+#print(dfs('185423_67'))
+#print(dfs('123456_78'))
+#print(dfs('2_3541687'))
+#print(dfs('2_3541687'))
 
 #opcional,extra
 def calcular_nova_heuristica(estado):
@@ -226,19 +248,32 @@ def calcular_nova_heuristica(estado):
     return sum(1 for a, b in zip(estado, objetivo) if a != b)
 
 def astar_new_heuristic(estado):
-    fila_prioridade = [(calcular_nova_heuristica(estado), estado, [])]
+    """
+    Recebe um estado (string), executa a busca A* com h(n) = sua nova heurística e
+    retorna uma lista de ações que leva do
+    estado recebido até o objetivo ("12345678_").
+    Caso não haja solução a partir do estado recebido, retorna None
+    :param estado: str
+    :return:
+    """
+    priority_queue = [(calcular_nova_heuristica(estado), estado, [])]
 
-    while fila_prioridade:
+    while priority_queue:
         _, estado_atual, acoes_realizadas = heapq.heappop(fila_prioridade)
 
-        if is_objetivo(estado_atual):
+        if objective == estado_atual:
             return acoes_realizadas  # Retorna a lista de ações quando o objetivo é atingido
 
-        for acao in gerar_acoes(estado_atual):
-            novo_estado = realizar_acao(estado_atual, acao)
+        for acao in sucessor(estado_atual):
+            novo_estado = expande(estado_atual, acao)
             if novo_estado is not None:
                 nova_acao = acoes_realizadas + [acao]
                 custo_total = len(nova_acao) + calcular_nova_heuristica(novo_estado)
-                heapq.heappush(fila_prioridade, (custo_total, novo_estado, nova_acao))
+                heapq.heappush(priority_queue, (custo_total, novo_estado, nova_acao))
 
     return None  # Retorna None se não encontrar solução
+
+#print(astar_new_heuristic('185423_67'))
+#print(astar_new_heuristic('123456_78'))
+#print(astar_new_heuristic('2_3541687'))
+#print(astar_new_heuristic('2_3541687'))
