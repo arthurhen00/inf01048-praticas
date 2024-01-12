@@ -241,12 +241,6 @@ def dfs(estado:str)->list[str]:
 #print(dfs('2_3541687'))
 
 #opcional,extra
-def calcular_nova_heuristica(estado):
-    # Implemente sua heurística aqui
-    # Este é um exemplo de uma heurística simples que conta peças fora do lugar
-    objetivo = "12345678_"
-    return sum(1 for a, b in zip(estado, objetivo) if a != b)
-
 def astar_new_heuristic(estado):
     """
     Recebe um estado (string), executa a busca A* com h(n) = sua nova heurística e
@@ -256,22 +250,9 @@ def astar_new_heuristic(estado):
     :param estado: str
     :return:
     """
-    priority_queue = [(calcular_nova_heuristica(estado), estado, [])]
 
-    while priority_queue:
-        _, estado_atual, acoes_realizadas = heapq.heappop(fila_prioridade)
-
-        if objective == estado_atual:
-            return acoes_realizadas  # Retorna a lista de ações quando o objetivo é atingido
-
-        for acao in sucessor(estado_atual):
-            novo_estado = expande(estado_atual, acao)
-            if novo_estado is not None:
-                nova_acao = acoes_realizadas + [acao]
-                custo_total = len(nova_acao) + calcular_nova_heuristica(novo_estado)
-                heapq.heappush(priority_queue, (custo_total, novo_estado, nova_acao))
-
-    return None  # Retorna None se não encontrar solução
+    # substituir a linha abaixo pelo seu codigo
+    raise NotImplementedError
 
 #print(astar_new_heuristic('185423_67'))
 #print(astar_new_heuristic('123456_78'))
