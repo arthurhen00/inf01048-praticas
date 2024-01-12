@@ -190,26 +190,8 @@ def bfs(estado:str)->list[str]:
     :param estado: str
     :return:
     """
-    queue = deque([(estado, [])])  # Inicializa a fila com o estado inicial e uma lista vazia de ações
-
-    while queue:
-        estado_atual, acoes_realizadas = queue.popleft()
-
-        if(objective == estado_atual):
-            return acoes_realizadas
-
-        for acao in expande(estado_atual):
-            novo_estado = exec_astar(estado_atual, acao)
-            if novo_estado is not None:  # Verifica se a ação é válida
-                nova_acao = acoes_realizadas + [acao]
-                queue.append((novo_estado, nova_acao))
-
-    return None  # Retorna None se não encontrar solução
-
-#print(bfs('185423_67'))
-#print(bfs('123456_78'))
-#print(bfs('2_3541687'))
-#print(bfs('2_3541687'))
+    # substituir a linha abaixo pelo seu codigo
+    raise NotImplementedError
 
 #opcional,extra
 def dfs(estado:str)->list[str]:
@@ -221,27 +203,11 @@ def dfs(estado:str)->list[str]:
     :param estado: str
     :return:
     """
-    def dfs_rec(current_node, acoes_realizadas):
-        if current_node.estado == objective:
-            return acoes_realizadas  # Retorna a lista de ações quando o objetivo é atingido
-
-        for acao in expande(current_node):
-            novo_estado = exec_astar(current_node, acao)  # Implemente a função realizar_acao conforme as regras do seu problema
-            if novo_estado is not None:  # Verifica se a ação é válida
-                nova_acao = acoes_realizadas + [acao]
-                resultado = dfs_rec(novo_estado, nova_acao)
-                if resultado is not None:
-                    return resultado
-
-        return None  # Retorna None se não encontrar solução a partir do estado atual
-
-#print(dfs('185423_67'))
-#print(dfs('123456_78'))
-#print(dfs('2_3541687'))
-#print(dfs('2_3541687'))
+    # substituir a linha abaixo pelo seu codigo
+    raise NotImplementedError
 
 #opcional,extra
-def astar_new_heuristic(estado):
+def astar_new_heuristic(estado:str)->list[str]:
     """
     Recebe um estado (string), executa a busca A* com h(n) = sua nova heurística e
     retorna uma lista de ações que leva do
@@ -250,11 +216,5 @@ def astar_new_heuristic(estado):
     :param estado: str
     :return:
     """
-
     # substituir a linha abaixo pelo seu codigo
     raise NotImplementedError
-
-#print(astar_new_heuristic('185423_67'))
-#print(astar_new_heuristic('123456_78'))
-#print(astar_new_heuristic('2_3541687'))
-#print(astar_new_heuristic('2_3541687'))
