@@ -181,30 +181,69 @@ def exec_astar(start_node):
 #print(astar_hamming('2_3541687'))
 
 #opcional,extra
-def bfs(estado:str)->list[str]:
+def bfs(estado: str) -> list[str]:
     """
     Recebe um estado (string), executa a busca em LARGURA e
     retorna uma lista de ações que leva do
     estado recebido até o objetivo ("12345678_").
     Caso não haja solução a partir do estado recebido, retorna None
     :param estado: str
-    :return:
+    :return: List[str] or None
     """
-    # substituir a linha abaixo pelo seu codigo
-    raise NotImplementedError
+    queue = deque([Nodo(estado=estado, pai=None, acao=None, custo=0)])
+
+    visitados = set()
+
+    while queue:
+        
+        nodo_atual = queue.popleft()
+
+        if nodo_atual.estado == objective:
+            
+            return get_path(nodo_atual)
+
+        visitados.add(nodo_atual.estado)
+
+        sucessores = expande(nodo_atual)
+
+        for sucessor in sucessores:
+
+            if sucessor.estado not in visitados:
+
+                queue.append(sucessor)
+    return None
 
 #opcional,extra
-def dfs(estado:str)->list[str]:
+def dfs(estado: str) -> list[str]:
     """
     Recebe um estado (string), executa a busca em PROFUNDIDADE e
     retorna uma lista de ações que leva do
     estado recebido até o objetivo ("12345678_").
     Caso não haja solução a partir do estado recebido, retorna None
     :param estado: str
-    :return:
+    :return: List[str] or None
     """
-    # substituir a linha abaixo pelo seu codigo
-    raise NotImplementedError
+    
+    stack = [Nodo(estado=estado, pai=None, acao=None, custo=0)]
+
+    visitados = set()
+
+    while stack:
+
+        nodo_atual = stack.pop()
+
+        if nodo_atual.estado == objective:
+
+            return get_path(nodo_atual)
+
+        visitados.add(nodo_atual.estado)
+
+        sucessores = expande(nodo_atual)
+
+        for sucessor in sucessores:
+            if sucessor.estado not in visitados:
+                stack.append(sucessor)
+    return None
 
 #opcional,extra
 def astar_new_heuristic(estado:str)->list[str]:
