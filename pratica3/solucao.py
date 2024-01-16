@@ -2,9 +2,14 @@ from typing import Iterable, Set, Tuple
 from collections import deque
 import heapq
 from scipy.spatial.distance import hamming, cityblock
+import time
 
 objective = '12345678_'
 objective_char = [ord(char) for char in objective]
+expanded_nodes = 0
+solution_cost = 0
+astar_type = None
+
 class Nodo:
     """
     Implemente a classe Nodo com os atributos descritos na funcao init
@@ -125,7 +130,8 @@ def astar_hamming(estado:str)->list[str]:
     :param estado: str
     :return:
     """
-
+    global astar_type
+    astar_type = 'astar_hamming'
     current_node = Nodo(estado= estado,
                         pai= None,
                         acao= None,
@@ -142,7 +148,8 @@ def astar_manhattan(estado:str)->list[str]:
     :param estado: str
     :return:
     """
-    
+    global astar_type
+    astar_type= 'astar_manhattan'
     current_node = Nodo(estado= estado,
                         pai= None,
                         acao= None,
@@ -152,91 +159,136 @@ def astar_manhattan(estado:str)->list[str]:
 
     
 def exec_astar(start_node):
+    global expanded_nodes, solution_cost
+    expanded_nodes = 0
+    solution_cost = 0
+
+    start_time = time.time()
+
     x = set()
     f = []
     heapq.heappush(f, (start_node.get_cost(), start_node))
-    while(f):
-        _ , current_node = heapq.heappop(f)
+    while f:
+        _, current_node = heapq.heappop(f)
         
         if current_node.estado == objective:
-            return get_path(nodo = current_node)
-        
+            end_time = time.time()
+            elapsed_time = end_time - start_time
+
+            # Métricas
+            print(f"{astar_type} - Nós expandidos: {expanded_nodes}")
+            print(f"{astar_type} - Tempo decorrido: {elapsed_time} segundos")
+            print(f"{astar_type} - Custo da solução: {solution_cost}")
+            return get_path(nodo=current_node)
+
         if current_node in x:
             continue
 
         x.add(current_node)
 
-        
+        expanded_nodes += 1
+        solution_cost = current_node.get_cost()
+
         discovered_nodes = expande(current_node)
 
         for node in discovered_nodes:
             if node not in x:
                 heapq.heappush(f, (node.get_cost(), node))
+
+    end_time = time.time()
+    elapsed_time = end_time - start_time
+
+    # Métricas
+    print(f"{astar_type} - Nós expandidos: {expanded_nodes}")
+    print(f"{astar_type} - Tempo decorrido: {elapsed_time} segundos")
+    print(f"{astar_type} - Custo da solução: {solution_cost}")
+
     return None
 
 #opcional,extra
 def bfs(estado: str)->list[str]:
-    """
-    Recebe um estado (string), executa a busca em LARGURA e
-    retorna uma lista de ações que leva do
-    estado recebido até o objetivo ("12345678_").
-    Caso não haja solução a partir do estado recebido, retorna None
-    :param estado: str
-    :return: List[str] or None
-    """
+    global expanded_nodes, solution_cost
+    expanded_nodes = 0
+    solution_cost = 0
+    start_time = time.time()
+
     queue = deque([Nodo(estado=estado, pai=None, acao=None, custo=0)])
 
     visitados = set()
 
     while queue:
-        
         nodo_atual = queue.popleft()
 
         if nodo_atual.estado == objective:
-            
+            end_time = time.time()
+            elapsed_time = end_time - start_time
+            # Métricas
+            print(f"BFS - Nós expandidos: {expanded_nodes}")
+            print(f"BFS - Tempo decorrido: {elapsed_time} segundos")
+            print(f"BFS - Custo da solução: {solution_cost}")
             return get_path(nodo_atual)
 
         visitados.add(nodo_atual.estado)
 
+        expanded_nodes += 1
+        solution_cost = nodo_atual.get_cost()
+
         sucessores = expande(nodo_atual)
 
         for sucessor in sucessores:
-
             if sucessor.estado not in visitados:
-
                 queue.append(sucessor)
+
+    end_time = time.time()
+    elapsed_time = end_time - start_time
+    # Métricas
+    print(f"BFS - Nós expandidos: {expanded_nodes}")
+    print(f"BFS - Tempo decorrido: {elapsed_time} segundos")
+    print(f"BFS - Custo da solução: {solution_cost}")
+
     return None
 
 #opcional,extra
 def dfs(estado: str)->list[str]:
-    """
-    Recebe um estado (string), executa a busca em PROFUNDIDADE e
-    retorna uma lista de ações que leva do
-    estado recebido até o objetivo ("12345678_").
-    Caso não haja solução a partir do estado recebido, retorna None
-    :param estado: str
-    :return: List[str] or None
-    """
-    
+    global expanded_nodes, solution_cost
+    expanded_nodes = 0
+    solution_cost = 0
+    start_time = time.time()
+
     stack = [Nodo(estado=estado, pai=None, acao=None, custo=0)]
 
     visitados = set()
 
     while stack:
-
         nodo_atual = stack.pop()
 
         if nodo_atual.estado == objective:
-
+            end_time = time.time()
+            elapsed_time = end_time - start_time
+            # Métricas
+            print(f"DFS - Nós expandidos: {expanded_nodes}")
+            print(f"DFS - Tempo decorrido: {elapsed_time} segundos")
+            print(f"DFS - Custo da solução: {solution_cost}")
             return get_path(nodo_atual)
 
         visitados.add(nodo_atual.estado)
+
+        expanded_nodes += 1
+        solution_cost = nodo_atual.get_cost()
 
         sucessores = expande(nodo_atual)
 
         for sucessor in sucessores:
             if sucessor.estado not in visitados:
                 stack.append(sucessor)
+
+    end_time = time.time()
+    elapsed_time = end_time - start_time
+    # Métricas
+    print(f"DFS - Nós expandidos: {expanded_nodes}")
+    print(f"DFS - Tempo decorrido: {elapsed_time} segundos")
+    print(f"DFS - Custo da solução: {solution_cost}")
+
     return None
 
 #opcional,extra
@@ -252,10 +304,8 @@ def astar_new_heuristic(estado:str)->list[str]:
     # substituir a linha abaixo pelo seu codigo
     raise NotImplementedError
 
-#print(astar_bfs('185423_67'))
-#print(astar_hamming('123456_78'))
-#print(astar_hamming('2_3541687'))
-#print(dfs('2_3541687'))
-#print(bfs('2_3541687'))
 #print(astar_hamming('2_3541687'))
 #print(astar_manhattan('2_3541687'))
+#print(bfs('2_3541687'))
+#print(dfs('2_3541687'))
+
