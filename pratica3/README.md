@@ -20,6 +20,8 @@ hamming: Calcula a distância de Hamming entre duas sequências.
 
 cityblock: Calcula a distância de Manhattan, soma das diferenças absolutas entre as coordenadas dos pontos.
 
+time: fornece funcionalidades relacionadas à manipulação do tempo.
+
 astar_hamming:  
 Nós expandidos: 90763  
 Tempo decorrido: 12.268971681594849 segundos  
