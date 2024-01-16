@@ -20,18 +20,22 @@ hamming: Calcula a distância de Hamming entre duas sequências.
 
 cityblock: Calcula a distância de Manhattan, soma das diferenças absolutas entre as coordenadas dos pontos.
 
-astar_hamming - Nós expandidos: 90763
-astar_hamming - Tempo decorrido: 12.268971681594849 segundos
-astar_hamming - Custo da solução: 23.0
+astar_hamming:
+Nós expandidos: 90763
+Tempo decorrido: 12.268971681594849 segundos
+Custo da solução: 23.0
 
-astar_manhattan - Nós expandidos: 4984
-astar_manhattan - Tempo decorrido: 0.4169752597808838 segundos
-astar_manhattan - Custo da solução: 100
+astar_manhattan:
+Nós expandidos: 4984
+Tempo decorrido: 0.4169752597808838 segundos
+Custo da solução: 100
 
-BFS - Nós expandidos: 186382
-BFS - Tempo decorrido: 4.117965459823608 segundos
-BFS - Custo da solução: 23
+BFS:
+Nós expandidos: 186382
+Tempo decorrido: 4.117965459823608 segundos
+Custo da solução: 23
 
-DFS - Nós expandidos: 167533
-DFS - Tempo decorrido: 3.6077897548675537 segundos
-DFS - Custo da solução: 103341
+DFS:
+Nós expandidos: 167533
+Tempo decorrido: 3.6077897548675537 segundos
+Custo da solução: 103341
