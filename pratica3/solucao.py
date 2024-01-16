@@ -240,15 +240,16 @@ def dfs(estado: str)->list[str]:
     return None
 
 #opcional,extra
-def astar_new_heuristic(estado: str)->list[str]:
+def astar_new_heuristic(estado:str)->list[str]:
     """
     Recebe um estado (string), executa a busca A* com h(n) = sua nova heurística e
     retorna uma lista de ações que leva do
     estado recebido até o objetivo ("12345678_").
     Caso não haja solução a partir do estado recebido, retorna None
     :param estado: str
-    :return: List[str] or None
+    :return:
     """
+    # substituir a linha abaixo pelo seu codigo
     raise NotImplementedError
 
 #print(astar_bfs('185423_67'))
