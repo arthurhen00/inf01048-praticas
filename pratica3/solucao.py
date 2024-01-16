@@ -1,7 +1,6 @@
 from typing import Iterable, Set, Tuple
 from collections import deque
 import heapq
-
 from scipy.spatial.distance import hamming, cityblock
 
 objective = '12345678_'
@@ -26,14 +25,14 @@ class Nodo:
         self.heuristic = heuristica
         self.hamming_distance = None
         self.manhattan_distance = None
+        self.bfs = bfs
+        self.dfs = dfs
+        
         if self.heuristic is not None:
             if self.heuristic.lower()  == 'hamming':
                 self.hamming_distance = hamming(list(self.estado), list(objective))
             elif self.heuristic.lower()  == 'manhattan':
                 self.manhattan_distance = cityblock([ord(char) for char in self.estado], objective_char)
-            
-            
-        
         
     def __hash__(self):
         return hash((self.estado))
@@ -54,9 +53,9 @@ class Nodo:
         
     def get_cost(self):
         if self.heuristic is not None:
-            if self.heuristic.lower()  == 'hamming':
+            if self.heuristic.lower() == 'hamming':
                 return self.hamming_distance + self.custo
-            elif self.heuristic.lower()  == 'manhattan':
+            elif self.heuristic.lower() == 'manhattan':
                 return self.manhattan_distance + self.custo
         return self.custo
 
@@ -175,13 +174,8 @@ def exec_astar(start_node):
                 heapq.heappush(f, (node.get_cost(), node))
     return None
 
-#print(astar_hamming('185423_67'))
-#print(astar_hamming('123456_78'))
-#print(astar_hamming('2_3541687'))
-#print(astar_hamming('2_3541687'))
-
 #opcional,extra
-def bfs(estado: str) -> list[str]:
+def bfs(estado: str)->list[str]:
     """
     Recebe um estado (string), executa a busca em LARGURA e
     retorna uma lista de ações que leva do
@@ -214,7 +208,7 @@ def bfs(estado: str) -> list[str]:
     return None
 
 #opcional,extra
-def dfs(estado: str) -> list[str]:
+def dfs(estado: str)->list[str]:
     """
     Recebe um estado (string), executa a busca em PROFUNDIDADE e
     retorna uma lista de ações que leva do
@@ -246,14 +240,21 @@ def dfs(estado: str) -> list[str]:
     return None
 
 #opcional,extra
-def astar_new_heuristic(estado:str)->list[str]:
+def astar_new_heuristic(estado: str)->list[str]:
     """
     Recebe um estado (string), executa a busca A* com h(n) = sua nova heurística e
     retorna uma lista de ações que leva do
     estado recebido até o objetivo ("12345678_").
     Caso não haja solução a partir do estado recebido, retorna None
     :param estado: str
-    :return:
+    :return: List[str] or None
     """
-    # substituir a linha abaixo pelo seu codigo
     raise NotImplementedError
+
+#print(astar_bfs('185423_67'))
+#print(astar_hamming('123456_78'))
+#print(astar_hamming('2_3541687'))
+#print(dfs('2_3541687'))
+#print(bfs('2_3541687'))
+#print(astar_hamming('2_3541687'))
+#print(astar_manhattan('2_3541687'))
