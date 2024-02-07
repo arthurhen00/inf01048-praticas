@@ -13,4 +13,48 @@ def minimax_move(state, max_depth:int, eval_func:Callable) -> Tuple[int, int]:
                     and should return a float value representing the utility of the state for the player.
     :return: (int, int) tuple with x, y coordinates of the move (remember: 0 is the first row/column)
     """
-    raise NotImplementedError()
+    utility, move = max(state,max_depth,eval_func)
+
+    return move
+
+
+def max(state,max_depth, eval_func):
+    if state.is_terminal() or max_depth == 0:
+        return  eval_func(state, state.player), None
+    
+    v = float('-inf') 
+    a = None
+    legal_moves = state.legal_moves()
+    if len(legal_moves) == 0:
+        return eval_func(state, state.player), None
+    
+    for move in legal_moves:
+        new_state = state.next_state(move)
+        
+        min_v , _ = min(new_state, max_depth - 1, eval_func)
+        if min_v > v:
+            v = min_v
+            a = move
+    
+
+    return v, a
+
+def min(state,max_depth, eval_func):
+    if state.is_terminal() or max_depth == 0:
+        return eval_func(state, state.player), None
+    
+    v = float('inf') 
+    a = None
+    
+    legal_moves = state.legal_moves()
+    if len(legal_moves) == 0:
+        return eval_func(state, state.player), None
+    
+    for move in legal_moves:
+        new_state = state.next_state(move)
+        max_v , _ = max(new_state, max_depth - 1, eval_func)
+        if max_v < v:
+            v = max_v
+            a = move
+        
+    return v, a
