@@ -1,8 +1,4 @@
-import random
 from typing import Tuple, Callable
-
-
-
 def minimax_move(state, max_depth:int, eval_func:Callable) -> Tuple[int, int]:
     """
     Returns a move computed by the minimax algorithm with alpha-beta pruning for the given game state.
@@ -13,52 +9,50 @@ def minimax_move(state, max_depth:int, eval_func:Callable) -> Tuple[int, int]:
                     and should return a float value representing the utility of the state for the player.
     :return: (int, int) tuple with x, y coordinates of the move (remember: 0 is the first row/column)
     """
-    utility, move = max(state,max_depth,eval_func)
-
+    _, move = MAX(state,max_depth,eval_func, float('-inf'), float('inf'))
+    
     return move
 
-
-def max(state,max_depth, eval_func):
-    if state.is_terminal() or max_depth == 0:
-        return  eval_func(state, state.player), None
-    
-    v = float('-inf') 
+def MAX(state, max_depth, eval_func, alpha, beta):
+    if state.is_terminal():
+        return eval_func(state, state.player), None
+        
+    v = float('-inf')
     a = None
     legal_moves = state.legal_moves()
-    if len(legal_moves) == 0:
-        return eval_func(state, state.player), None
     
     for move in legal_moves:
         new_state = state.next_state(move)
-        
-        min_v , _ = min(new_state, max_depth - 1, eval_func)
-        if min_v > v:
+        min_v, _ = MIN(new_state, max_depth, eval_func, alpha, beta)
+        if min_v > v :
             v = min_v
             a = move
-    
-
-    return v, a
-
-def min(state,max_depth, eval_func):
-    if state.is_terminal() or max_depth == 0:
+            
+        alpha = max(alpha, min_v)
+        if alpha >= beta:
+            break
+    return v,a
+        
+        
+def MIN(state, max_depth, eval_func, alpha, beta):
+    if state.is_terminal():
         return eval_func(state, get_opponent(state.player)), None
-    
-    v = float('inf') 
+        
+    v = float('inf')
     a = None
     
     legal_moves = state.legal_moves()
-    if len(legal_moves) == 0:
-        return eval_func(state, state.player), None
     
     for move in legal_moves:
         new_state = state.next_state(move)
-        max_v , _ = max(new_state, max_depth - 1, eval_func)
-        if max_v < v:
+        max_v, _ = MAX(new_state, max_depth, eval_func, alpha, beta)
+        if max_v < v :
             v = max_v
             a = move
-        
-    return v, a
-
+        beta = min(beta, max_v)
+        if beta <= alpha:
+            break
+    return v,a
 
 def get_opponent(player):
     return 'B' if player == 'W' else 'W'
