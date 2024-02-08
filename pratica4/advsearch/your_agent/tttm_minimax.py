@@ -31,34 +31,18 @@ def utility(state, player:str) -> float:
     """
     Retorna a utilidade de um estado (terminal) 
     """
-    board = state.board.board
-    enemy = 'W' if player == 'B' else 'B'
+    opponent = get_opponent(player)
     
-    if player_lost(board, player):
+    loser = state.board.check_loser()
+    
+    #print('LOSER: ', loser)
+    if loser == player:
         return -1000
     
-    if player_lost(board, enemy): 
+    if loser == opponent:
         return 1000
     
-    return 1
-
-def player_lost(board, player):
-    ## checa diagonais
-    if board[0][0] == board[1][1] == board[2][2] == player:
-        return True
-
-    if board[0][2] == board[1][1] == board[2][0] == player:
-        return True
-    ## checa colunas
-    for i in range(3): 
-        if board[0][i] == board[1][i] == board[2][i] == player: 
-            return True
-        
-     ## checa linhas
-    for row in board:
-        if row[0] ==  row[1] == row[2] == player:
-            return True
-
-    return False
-        
-
+    return 0
+    
+def get_opponent(player):
+    return 'B' if player == 'W' else 'W'
