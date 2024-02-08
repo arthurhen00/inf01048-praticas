@@ -41,7 +41,7 @@ def max(state,max_depth, eval_func):
 
 def min(state,max_depth, eval_func):
     if state.is_terminal() or max_depth == 0:
-        return eval_func(state, state.player), None
+        return eval_func(state, get_opponent(state.player)), None
     
     v = float('inf') 
     a = None
@@ -58,3 +58,7 @@ def min(state,max_depth, eval_func):
             a = move
         
     return v, a
+
+
+def get_opponent(player):
+    return 'B' if player == 'W' else 'W'
