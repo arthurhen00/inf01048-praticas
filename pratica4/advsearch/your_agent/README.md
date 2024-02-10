@@ -21,8 +21,15 @@ Othello
 | ------ | ----- | ---- | ------ |
 | Count  |       |      |        |
 | Mask   |       |      |        |
-| Custum |       |      |        |
+| Custom |       |      |        |
 
 2. 
 
 3. 
+
+
+
+Feedback:
+    O trabalho foi na sua maior parte fácil devido ao algoritmo estar descrito nos slides e as heurísticas serem simples. O único problema que tomou um tempo considerável, apesar de estar escrito no enunciado, foi que o min tinha que inverter o player para calcular a utilidade com se fosse o player que iria jogar.
+
+    Quanto ao uso de IA, ao perceber que o erro estava no algoritmo do minimax tentamos usar tanto o ChatGPT e o chat do Bing para ver se algum encontrava a solução, nenhum encontrou.
